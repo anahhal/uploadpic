@@ -1,0 +1,146 @@
+/* تعيين الأنماط العامة */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    flex-direction: column;
+}
+
+h1 {
+    color: #333;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px 5px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.camera-container {
+    position: relative;
+    width: 320px; /* يمكنك تعديل العرض بناءً على احتياجاتك */
+    height: 320px; /* جعل الحاوية مربعة */
+}
+
+.camera-container video, .camera-container canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* يمنع تمدد الصورة ويحافظ على نسبتها */
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    max-width: 100%;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    gap: 10px; /* الفجوة بين الأزرار */
+}
+
+/* إضافة أنماط لعرض الصور */
+.image-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.image-wrapper {
+    margin: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 4px;
+    width: calc(25% - 20px); /* عرض الصورة يكون ثلث الشاشة مع تقليل الفجوة بين الصور */
+    box-sizing: border-box;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+/* تحسين العرض على الشاشات الصغيرة */
+@media (max-width: 768px) {
+    .image-wrapper {
+        width: calc(50% - 20px); /* عرض الصورة يكون نصف الشاشة */
+    }
+}
+
+@media (max-width: 480px) {
+    .image-wrapper {
+        width: calc(100% - 20px); /* عرض الصورة يكون كامل الشاشة */
+    }
+}
+
+
+/* أنماط للأجهزة المكتبية */
+@media screen and (min-width: 1024px) {
+    .camera-container {
+        width: 640px;
+        height: 640px; /* جعل الحاوية مربعة */
+    }
+
+    .button-container {
+        flex-direction: row; /* وضع الأزرار بجانب الصورة */
+    }
+}
+
+/* أنماط للأجهزة اللوحية */
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+    .camera-container {
+        width: 480px;
+        height: 480px; /* جعل الحاوية مربعة */
+    }
+
+    button {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    .button-container {
+        flex-direction: column; /* وضع الأزرار تحت الصورة */
+    }
+}
+
+/* أنماط للهواتف المحمولة */
+@media screen and (max-width: 767px) {
+    .camera-container {
+        width: 320px;
+        height: 320px; /* جعل الحاوية مربعة */
+    }
+
+    button {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .button-container {
+        flex-direction: column; /* وضع الأزرار تحت الصورة */
+    }
+}
