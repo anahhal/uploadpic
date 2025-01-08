@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>التقاط صور بالكاميرا</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        function openCamera() {
+            document.getElementById('fileInput').click();
+        }
+
+        function handleFileInput(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    const canvas = document.getElementById('canvas');
+                    const context = canvas.getContext('2d');
+                    context.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                    // إضافة الوقت والتاريخ مع خلفية سوداء
+                    const now = new Date();
+                    const options = { 
+                        year: 'numeric', 
+                        month: '2-digit', 
+                        day: '2-digit', 
+                        hour: '2-digit', 
+                        minute: '2-digit', 
+                        second: '2-digit', 
+                        hour12: false 
+                    };
+                    const timestamp = now.toLocaleString('en-GB', options);
+                    context.font = '20px Arial';
+                    const textWidth = context.measureText(timestamp).width;
+                    const xPosition = (canvas.width - textWidth) / 2;
+                    
+                    // رسم خلفية سوداء للنص
+                    context.fillStyle = 'black';
+                    context.fillRect(xPosition - 10, canvas.height - 35, textWidth + 20, 25);
+
+                    // رسم النص فوق الخلفية السوداء
+                    context.fillStyle = 'yellow';
+                    context.fillText(timestamp, xPosition, canvas.height - 15);
+
+                    canvas.style.display = 'block';
+                };
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function uploadImage() {
+            const canvas = document.getElementById('canvas');
+            const dataUrl = canvas.toDataURL('image/png');
+            const xhr = new XMLHttpRequest();
+            const progressBar = document.getElementById('progressBar');
+
+            progressBar.value = 0; // تصفير شريط التقدم في البداية
+            progressBar.style.display = 'block'; // عرض شريط التقدم
+
+            xhr.open('POST', 'upload.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+
+            xhr.upload.onprogress = function(event) {
+                if (event.lengthComputable) {
+                    const percentComplete = (event.loaded / event.total) * 100;
+                    progressBar.value = percentComplete;
+                }
+            };
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    console.log('تم رفع الصورة بنجاح');
+                    alert('تم رفع الصورة بنجاح');
+                } else {
+                    console.error('حدث خطأ أثناء رفع الصورة');
+                    alert('حدث خطأ أثناء رفع الصورة');
+                }
+                progressBar.style.display = 'none'; // إخفاء شريط التقدم
+            };
+
+            xhr.onerror = function() {
+                console.error('حدث خطأ أثناء رفع الصورة');
+                alert('حدث خطأ أثناء رفع الصورة');
+                progressBar.style.display = 'none'; // إخفاء شريط التقدم
+            };
+
+            xhr.send(JSON.stringify({ image: dataUrl }));
+        }
+    </script>
+</head>
+<body>
+    <h1>التقاط صور بالكاميرا</h1>
+    <input id="fileInput" type="file" accept="image/*" capture="environment" onchange="handleFileInput(event)" style="display:none;">
+    <canvas id="canvas" width="300" height="400" style="display:none;"></canvas>
+    <progress id="progressBar" value="0" max="100" style="display:none;"></progress> <!-- شريط التقدم -->
+    <div class="button-container">
+        <button onclick="openCamera()">افتح الكاميرا</button>
+        <button onclick="uploadImage()">رفع الصورة</button>
+        <button onclick="window.location.href='view_images.php'">عرض الصور</button>
+    </div>
+</body>
+</html>
